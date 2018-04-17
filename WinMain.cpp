@@ -1,7 +1,26 @@
 #include <Windows.h>
+#include <memory>
 
 HWND ghMainWnd = 0;
 
+
+class WindowsManager
+{
+public:
+	static HWND ghMainWnd;
+	/*
+	static Windows& getWindows()
+	{
+		if (windows == nullptr) {
+			windows = std::make_unique<Windows>();
+		}
+		return *windows;
+	}
+
+private:
+	static std::unique_ptr<Windows> windows;
+	*/
+};
 class Windows
 {
 public:
