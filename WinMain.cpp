@@ -4,30 +4,13 @@
 HWND ghMainWnd = 0;
 
 
-class WindowsManager
-{
-public:
-	static HWND ghMainWnd;
-	/*
-	static Windows& getWindows()
-	{
-		if (windows == nullptr) {
-			windows = std::make_unique<Windows>();
-		}
-		return *windows;
-	}
-
-private:
-	static std::unique_ptr<Windows> windows;
-	*/
-};
 class Windows
 {
 public:
 	Windows();
 	virtual ~Windows();
-	Windows(const Windows& src) = delete;
-	Windows& operator=(const Windows& rhs) = delete;
+	Windows(const Windows& src);
+	Windows& operator=(const Windows& rhs);
 	bool InitWindowsApp(HINSTANCE instanceHandle, int show);
 	int Run();
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -36,14 +19,46 @@ private:
 	WNDCLASS wc;
 };
 
+class WindowsManager
+{
+public:
+	WindowsManager() {}
+	virtual ~WindowsManager() {}
+
+	static Windows& getWindows(void)
+	{
+		if (nullptr == instance) {
+			instance = new Windows();
+		}
+		return *instance;
+	}
+
+private:
+	static Windows* instance;
+};
+
+
+
 Windows::Windows()
 {
 	ghMainWnd = 0;
 }
 
+Windows::Windows(const Windows&)
+{
+
+}
+
 Windows::~Windows()
 {
 }
+
+Windows& Windows::operator=(const Windows& rhs)
+{
+	return *this;
+}
+
+
 
 bool Windows::InitWindowsApp(HINSTANCE instanceHandle, int show)
 {
@@ -132,7 +147,7 @@ int Windows::Run()
 int WINAPI
 WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nShowCmd)
 {
-	Windows windows;
+	Windows windows = WindowsManager::getWindows();
 	if (!windows.InitWindowsApp(hInstance, nShowCmd)) {
 		return 0;
 	}
